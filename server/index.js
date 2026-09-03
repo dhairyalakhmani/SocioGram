@@ -3,6 +3,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
+import userRouter from './routes/user.routes.js';
 dotenv.config()
 
 if (dns.getServers().includes('127.0.0.1')) {
@@ -15,6 +16,8 @@ const PORT = process.env.PORT || 3000;
 app.get('/', (req, res) => {
     res.send("Hello from the server");
 })
+app.use(express.json())
+app.use('/users', userRouter)
 
 const dbURL = process.env.MONGODB_URL;
 
@@ -26,3 +29,4 @@ mongoose.connect(dbURL).then(() => {
 }).catch((error) => {
     console.log("Failed due to the error: ", error)
 })
+
