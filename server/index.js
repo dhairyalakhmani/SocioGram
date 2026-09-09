@@ -2,13 +2,14 @@ import dns from 'node:dns';
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 
 import userRouter from './routes/user.routes.js';
 dotenv.config()
 
-if (dns.getServers().includes('127.0.0.1')) {
-    dns.setServers(['8.8.8.8', '1.1.1.1']);
-}
+    if (dns.getServers().includes('127.0.0.1')) {
+        dns.setServers(['8.8.8.8', '1.1.1.1']);
+    }
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,6 +19,7 @@ app.get('/', (req, res) => {
 })
 app.use(express.json())
 app.use('/users', userRouter)
+app.use(cookieParser());
 
 const dbURL = process.env.MONGODB_URL;
 
