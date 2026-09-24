@@ -1,6 +1,7 @@
 import userModel from "../models/user.model.js";
 import bcrypt from 'bcrypt';
 import { genToken } from "../utils/generateToken.js";
+import uploadToCloudinary from "../utils/uploadCloudinary.js";
 
 const cookieOptions = {
     httpOnly: true,
@@ -133,9 +134,33 @@ export const unFollowUser = async (req, res) => {
     }
 }
 
-export const testUpload = async (req, res) => {
+export const updateProfile = async (req, res) => {
     try {
-        res.send(req.file)
+        const userId = req.user._id
+        const { name, bio, username, email } = req.body
+        if (!name?.trim() || !username?.trim() || !email?.trim()) {
+            return res.status(400).json({ message: "Name, username and email are required" });
+        }
+        const cleanUsername = username.trim();
+        const normalizedEmail = email.trim().toLowerCase();
+        if (await userModel.findOne({ username: cleanUsername, _id: { $ne: userId } })) {
+            return res.status(409).json({ message: "Username already exists" });
+        }
+        if (await userModel.findOne({ email: normalizedEmail, _id: { $ne: userId } })) {
+            return res.status(409).json({ message: "Email already exists" });
+        }
+        const updates = {
+            name: name.trim(),
+            username: cleanUsername,
+            email: normalizedEmail,
+            bio: bio?.trim() || ""
+        }
+        if (req.file) {
+            const uploadedImage = await uploadToCloudinary(req.file.buffer)
+            updates.profileImage = uploadedImage.secure_url
+        }
+        const userUpdated = await userModel.findByIdAndUpdate(userId, updates, { returnDocument: 'after', runValidators: true }).select('-password')
+        return res.status(200).json({ message: "User Updated", user: userUpdated })
     } catch (error) {
         return res.status(500).json({ message: "Internal Server Error.", error: error.message });
     }
