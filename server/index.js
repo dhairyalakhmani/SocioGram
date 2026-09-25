@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
 import userRouter from './routes/user.routes.js';
+import postRouter from './routes/post.routes.js';
 dotenv.config()
 
     if (dns.getServers().includes('127.0.0.1')) {
@@ -26,7 +27,7 @@ app.get('/', (req, res) => {
     res.send("Hello from the server");
 })
 app.use('/users', userRouter)
-
+app.use('/post', postRouter)
 const dbURL = process.env.MONGODB_URL;
 
 mongoose.connect(dbURL).then(() => {
