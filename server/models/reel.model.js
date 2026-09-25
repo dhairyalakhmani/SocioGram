@@ -1,6 +1,6 @@
 import mongoose, { Mongoose } from 'mongoose';
 
-const postSchema = mongoose.Schema({
+const reelSchema = mongoose.Schema({
     author: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
@@ -10,10 +10,10 @@ const postSchema = mongoose.Schema({
         type: String,
         maxLength: 500
     },
-    image: {
+    video: {
         type: String
     }
 }, {timestamps: true})
 
-const postModel = mongoose.model('Post', postSchema);
-export default postModel;
+const reelModel = mongoose.model('Reel', reelSchema);
+export default reelModel;

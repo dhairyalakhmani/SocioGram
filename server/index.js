@@ -7,6 +7,8 @@ import cors from 'cors';
 
 import userRouter from './routes/user.routes.js';
 import postRouter from './routes/post.routes.js';
+import reelRouter from './routes/reel.routes.js';
+
 dotenv.config()
 
     if (dns.getServers().includes('127.0.0.1')) {
@@ -28,6 +30,7 @@ app.get('/', (req, res) => {
 })
 app.use('/users', userRouter)
 app.use('/post', postRouter)
+app.use('/reel', reelRouter)
 const dbURL = process.env.MONGODB_URL;
 
 mongoose.connect(dbURL).then(() => {

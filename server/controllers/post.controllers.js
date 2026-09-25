@@ -1,13 +1,13 @@
 import uploadToCloudinary from "../utils/uploadCloudinary.js";
 import postModel from "../models/post.model.js";
-import userModel from "../models/user.model";
+import userModel from "../models/user.model.js";
 
 export const createPost = async (req, res) => {
     try{
         const userId = req.user._id;
         if(!userId) return res.status(404).json({message: "User not found."})
         const {caption} = req.body;
-        if(caption.length > 500) return res.status(401).json({message: "Caption should be max 500 characters long"})
+        if(caption?.length > 500) return res.status(400).json({message: "Caption should be max 500 characters long"})
         let image;
         if(req.file){
             const uploadedImage = await uploadToCloudinary(req.file.buffer);
